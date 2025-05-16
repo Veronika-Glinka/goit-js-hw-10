@@ -52,7 +52,12 @@ buttonEl.setAttribute('disabled', true);
 //Відлік часу
 
 function startTimer() {
+  buttonEl.disabled = true;
+  document.querySelector('#datetime-picker').setAttribute('disabled', true);
   timerId = setInterval(() => calculateTimeLeft(userSelectedDate), 1000);
+
+  fp.set('clickOpens', false); // забороняє відкриття календаря
+  document.querySelector('#datetime-picker').setAttribute('disabled', true); // блокує поле
 
   function calculateTimeLeft(userSelectedDate) {
     let timeInMs = userSelectedDate.getTime();
@@ -61,6 +66,10 @@ function startTimer() {
 
     if (timeLeft <= 0) {
       clearInterval(timerId);
+      document.querySelector('[data-days]').textContent = '00';
+      document.querySelector('[data-hours]').textContent = '00';
+      document.querySelector('[data-minutes]').textContent = '00';
+      document.querySelector('[data-seconds]').textContent = '00';
       iziToast.success({
         title: 'success',
         message: 'Timer has just ended',
@@ -74,8 +83,6 @@ function startTimer() {
     document.querySelector('[data-hours]').textContent = hours;
     document.querySelector('[data-minutes]').textContent = minutes;
     document.querySelector('[data-seconds]').textContent = seconds;
-
-    buttonEl.disabled = true;
   }
 }
 
@@ -95,16 +102,16 @@ function convertMs(ms) {
   // Remaining seconds
   let seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
-  function addLeadingZero(value) {
-    return value.toString().padStart(2, '0');
-  }
-
   days = addLeadingZero(days);
   hours = addLeadingZero(hours);
   minutes = addLeadingZero(minutes);
   seconds = addLeadingZero(seconds);
 
   return { days, hours, minutes, seconds };
+}
+
+function addLeadingZero(value) {
+  return value.toString().padStart(2, '0');
 }
 
 buttonEl.addEventListener('click', startTimer);

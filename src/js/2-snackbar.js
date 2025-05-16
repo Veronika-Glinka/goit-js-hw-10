@@ -9,32 +9,32 @@ formEl.addEventListener('submit', createPromise);
 
 function createPromise(e) {
   e.preventDefault();
-  let delay = Number(formEl.elements.delay.value);
 
-  let state = formEl.elements.state.value;
+  const delay = Number(formEl.elements.delay.value);
+  const state = formEl.elements.state.value;
 
   const promise = new Promise((resolve, reject) => {
     setTimeout(() => {
       if (state === 'fulfilled') {
-        resolve();
+        resolve(delay); // передаємо delay у resolve
       } else if (state === 'rejected') {
-        reject();
+        reject(delay); // передаємо delay у reject
       }
     }, delay);
   });
 
   promise
-    .then(() => {
+    .then(delayValue => {
       iziToast.success({
-        title: 'success',
-        message: `✅ Fulfilled promise in ${delay}ms`,
+        title: 'Success',
+        message: `✅ Fulfilled promise in ${delayValue}ms`,
         position: 'topRight',
       });
     })
-    .catch(() => {
+    .catch(delayValue => {
       iziToast.error({
         title: 'Error',
-        message: `❌ Rejected promise in ${delay}ms`,
+        message: `❌ Rejected promise in ${delayValue}ms`,
         position: 'topRight',
       });
     });
